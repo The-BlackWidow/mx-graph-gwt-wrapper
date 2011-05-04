@@ -32,8 +32,19 @@ function createCanvas(id)
 	return graph;
 }
 
-function createOutline( element )
+function createOutline(parent)
 {
+	var element = document.createElement('div');
+	element.id = 'outlineContainer';
+	element.style.position = 'absolute';
+	element.style.overflow = 'hidden';
+	element.style.top = '40px';
+	element.style.right = '0px';
+	element.style.width = '200px';
+	element.style.height = '140px';
+	element.style.borderStyle = 'solid';
+	element.style.corderColor = 'black';
+	parent.appendChild(element);
 	return new mxOutline(graph, element);
 }
 

@@ -17,14 +17,8 @@ public class Canvas<T> extends ContentPanel {
 				jsObject = createCanvas(getId());
 				widgetAttached = true;
 				listener.onCanvasInitialized();
-				
-				addOutline();
 			}
 		});
-	}
-
-	public void addOutline() {
-		add(new MxOutline());
 	}
 
 	public Node addNode(String id, String label, int xPos, int yPos, int width, int height) {
@@ -67,5 +61,9 @@ public class Canvas<T> extends ContentPanel {
 
 	public native void print() /*-{
 		$wnd.executeEditorAction('print');
+	}-*/;
+
+	public native JavaScriptObject addOutline(JavaScriptObject parent) /*-{
+		return $wnd.createOutline(parent);
 	}-*/;
 }

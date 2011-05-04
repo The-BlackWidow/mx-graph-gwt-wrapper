@@ -25,9 +25,10 @@ public class Mxgraphgwt implements EntryPoint {
 
 	Canvas canvas;
 	MxWindow window;
+	ContentPanel mainPanel;
 
 	public void onModuleLoad() {
-		ContentPanel mainPanel = new ContentPanel();
+		mainPanel = new ContentPanel();
 		final ContentPanel outline = new ContentPanel();
 		outline.setId("outline");
 		drawCanvas();
@@ -159,6 +160,8 @@ public class Mxgraphgwt implements EntryPoint {
 				n1.setStyle(CanvasConstants.STYLE_IMAGE, "http://mysticmedusa.com/wp-content/uploads/2009/07/33585.jpg");
 				Node n2 = canvas.addNode("2", "hello2", 500, 100, 100, 90);
 				canvas.addConnection(n1, n2);
+				
+				canvas.addOutline(mainPanel.getElement());
 			}
 		});
 
