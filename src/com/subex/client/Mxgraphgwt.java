@@ -1,24 +1,22 @@
 package com.subex.client;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.WidgetListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Document;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.subex.client.mxgraph.Canvas;
 import com.subex.client.mxgraph.CanvasConstants;
+import com.subex.client.mxgraph.CanvasIntializeListener;
 import com.subex.client.mxgraph.MxWindow;
 import com.subex.client.mxgraph.Node;
 
@@ -26,23 +24,17 @@ import com.subex.client.mxgraph.Node;
 public class Mxgraphgwt implements EntryPoint {
 
 	Canvas canvas;
+	MxWindow window;
 
 	public void onModuleLoad() {
 		ContentPanel mainPanel = new ContentPanel();
-		ContentPanel canvas = new ContentPanel();
-		canvas.setId("canvas");
-		canvas.addWidgetListener(new WidgetListener() {
-			public void widgetAttached(ComponentEvent ce) {
-				drawCanvas();
-			}
-
-		});
-		canvas.setHeading("canvas");
-		canvas.setStyleAttribute("overflow", "scroll");
-
+		final ContentPanel outline = new ContentPanel();
+		outline.setId("outline");
+		drawCanvas();
 		mainPanel.setBottomComponent(getToolbar());
 		mainPanel.setHeight("600");
 		mainPanel.add(canvas);
+
 		RootPanel.get().add(mainPanel);
 	}
 
@@ -106,43 +98,69 @@ public class Mxgraphgwt implements EntryPoint {
 		});
 		toolBar.add(addBtn);
 
+		Button removeBtn = new Button("Remove");
+		removeBtn.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+				if (window != null) {
+					window.destroy();
+					window = null;
+				}
+			}
+		});
+		toolBar.add(removeBtn);
+
 		return toolBar;
 	}
 
 	private void showWindow() {
-		MxWindow window = new MxWindow();
+		window = new MxWindow();
 		window.setTitle("sourish");
 		window.setXPos(300);
 		window.setYPos(300);
 		window.setHeight(200);
-		window.setWidth(200);
+		window.setWidth(355);
 		window.setContentId("ssg");
-		
+
 		window.show();
-		
-		com.google.gwt.dom.client.Document.get().getElementById("ssg").appendChild(new ComboBox().getElement());
+		window.setMaximizable(true);
+
+		window.attach(getContent(window));
 	}
 
-	private ContentPanel getContent() {
-		ContentPanel panel = new ContentPanel();
-		panel.setId("panel");
-		panel.add(new TextField());
-		
-		return panel;
+	private LayoutContainer getContent(final MxWindow window) {
+		FormData formData = new FormData("-20");
+		FormPanel simple = new FormPanel();
+		simple.setFrame(true);
+		simple.setWidth(350);
+
+		TextField<String> firstName = new TextField<String>();
+		firstName.setFieldLabel("Name");
+		firstName.setAllowBlank(false);
+		simple.add(firstName, formData);
+
+		TextArea description = new TextArea();
+		description.setPreventScrollbars(true);
+		description.setFieldLabel("Description");
+		simple.add(description, formData);
+
+		return simple;
 	}
 
 	private void drawCanvas() {
-		canvas = new Canvas("canvas");
+		canvas = new Canvas("canvas", new CanvasIntializeListener() {
+			public void onCanvasInitialized() {
+				Node n1 = canvas.addNode("1", "hello", 100, 100, 100, 90);
+				n1.setStyle(CanvasConstants.STYLE_SHAPE, CanvasConstants.SHAPE_LABEL);
+				n1.setStyle(CanvasConstants.STYLE_ROUNDED, "true");
+				n1.setStyle(CanvasConstants.STYLE_ALIGN, CanvasConstants.ALIGN_CENTER);
+				n1.setStyle(CanvasConstants.STYLE_VERTICAL_ALIGN, CanvasConstants.ALIGN_BOTTOM);
+				n1.setStyle(CanvasConstants.STYLE_IMAGE_ALIGN, CanvasConstants.ALIGN_CENTER);
+				n1.setStyle(CanvasConstants.STYLE_IMAGE_VERTICAL_ALIGN, CanvasConstants.ALIGN_TOP);
+				n1.setStyle(CanvasConstants.STYLE_IMAGE, "http://mysticmedusa.com/wp-content/uploads/2009/07/33585.jpg");
+				Node n2 = canvas.addNode("2", "hello2", 500, 100, 100, 90);
+				canvas.addConnection(n1, n2);
+			}
+		});
 
-		Node n1 = canvas.addNode("1", "hello", 100, 100, 100, 90);
-		n1.setStyle(CanvasConstants.STYLE_SHAPE, CanvasConstants.SHAPE_LABEL);
-		n1.setStyle(CanvasConstants.STYLE_ROUNDED, "true");
-		n1.setStyle(CanvasConstants.STYLE_ALIGN, CanvasConstants.ALIGN_CENTER);
-		n1.setStyle(CanvasConstants.STYLE_VERTICAL_ALIGN, CanvasConstants.ALIGN_BOTTOM);
-		n1.setStyle(CanvasConstants.STYLE_IMAGE_ALIGN, CanvasConstants.ALIGN_CENTER);
-		n1.setStyle(CanvasConstants.STYLE_IMAGE_VERTICAL_ALIGN, CanvasConstants.ALIGN_TOP);
-		n1.setStyle(CanvasConstants.STYLE_IMAGE, "http://mysticmedusa.com/wp-content/uploads/2009/07/33585.jpg");
-		Node n2 = canvas.addNode("2", "hello2", 500, 100, 100, 90);
-		canvas.addConnection(n1, n2);
 	}
 }

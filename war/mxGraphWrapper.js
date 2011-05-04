@@ -32,6 +32,11 @@ function createCanvas(id)
 	return graph;
 }
 
+function createOutline( element )
+{
+	return new mxOutline(graph, element);
+}
+
 function createNode(id, label, xPos, yPos, width, height)
 {
 	var style = new Object();

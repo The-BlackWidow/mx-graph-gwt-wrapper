@@ -1,11 +1,8 @@
 package com.subex.client.mxgraph;
 
-import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.dom.client.Element;
 
 public class MxWindow extends CanvasItem {
 	private int height;
@@ -59,24 +56,44 @@ public class MxWindow extends CanvasItem {
 		this.contentId = contentId;
 	}
 
-	public String getContent() {
+	public String getContentId() {
 		return contentId;
-	}	
-	
-	public void show() {
-		Window.alert("hi666666");
-		showNative(title, new ComboBox().getElement(), xPos, yPos, width, height);
 	}
-	
-	public native JavaScriptObject showNative(String title, Element contentId, int xPos, int yPos, int width, int height) /*-{
+
+	public void show() {
+		setJsObject(showNative(title, getContentId(), xPos, yPos, width, height));
+	}
+
+	public void attach(LayoutContainer content) {
+		Element element = com.google.gwt.dom.client.Document.get().getElementById(getContentId());
+		content.render((com.google.gwt.user.client.Element) element);
+	}
+
+	public native void setMaximizable(boolean isMaximizable) /*-{
+		var node = this.@com.subex.client.mxgraph.CanvasItem::getJsObject()();
+		node.setMaximizable(isMaximizable);
+	}-*/;
+
+	public native void setScrollable(boolean isScrollable) /*-{
+		var node = this.@com.subex.client.mxgraph.CanvasItem::getJsObject()();
+		node.setScrollable(isScrollable );
+	}-*/;
+
+	public native void setResizable(boolean isResizable) /*-{
+		var node = this.@com.subex.client.mxgraph.CanvasItem::getJsObject()();
+		node.setResizable(isResizable );
+	}-*/;
+
+	public native void destroy() /*-{
+		var node = this.@com.subex.client.mxgraph.CanvasItem::getJsObject()();
+		node.destroy();
+	}-*/;
+
+	public native JavaScriptObject showNative(String title, String contentId, int xPos, int yPos, int width, int height) /*-{
 		var content = document.createElement('div');
 		content.id = contentId;
-		var wnd = new $wnd.mxWindow(title, contentId, xPos, yPos, width, height);
-		wnd.setMaximizable(true);
-		wnd.setScrollable(true);
-		wnd.setResizable(true);
+		var wnd = new $wnd.mxWindow(title, content, xPos, yPos, width, height);
 		wnd.setVisible(true);
-		
 		return wnd;
 	}-*/;
 
