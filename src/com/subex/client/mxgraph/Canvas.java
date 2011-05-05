@@ -1,11 +1,17 @@
 package com.subex.client.mxgraph;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.WidgetListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Window;
 
 public class Canvas<T> extends ContentPanel {
+
+	private Map<String, CanvasItem> canvasItems = new HashMap<String, CanvasItem>();
 	private JavaScriptObject jsObject;
 	private boolean widgetAttached;
 
@@ -17,18 +23,20 @@ public class Canvas<T> extends ContentPanel {
 				jsObject = createCanvas(getId());
 				widgetAttached = true;
 				listener.onCanvasInitialized();
-				registerTooltip();
+				registerTooltip(Canvas.this);
 			}
 		});
 	}
 
 	public Node addNode(String id, String label, int xPos, int yPos, int width, int height) {
 		Node node = new Node(id, label, xPos, yPos, width, height);
+		canvasItems.put(node.getId(), node);
 		return node;
 	};
 
 	public Connection addConnection(Node source, Node target) {
 		Connection connection = new Connection(source, target);
+		canvasItems.put(connection.getId(), connection);
 		return connection;
 	};
 
@@ -68,10 +76,16 @@ public class Canvas<T> extends ContentPanel {
 		return $wnd.createOutline(parent);
 	}-*/;
 
-	public native void registerTooltip() /*-{
+	private native void registerTooltip(Canvas<T> canvas) /*-{
 		$wnd.graph.getTooltipForCell = function(cell)
 		{
-			return $wnd.alert(cell.id);
+			return canvas.@com.subex.client.mxgraph.Canvas::getTooltip(Ljava/lang/String;)(cell.id);
 		}
 	}-*/;
+	
+	@SuppressWarnings("unused")
+	private String getTooltip(String id)
+	{
+		return canvasItems.get(id).getTooltip();
+	}
 }

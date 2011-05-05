@@ -4,8 +4,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 public class Node extends CanvasItem {
 	Node(String id, String label, int xPos, int yPos, int width, int height) {
-		super.id = id;
-		setJsObject(createNode(id, label, xPos, yPos, width, height));
+		super.id = "n" + id;
+		setJsObject(createNode(getId(), label, xPos, yPos, width, height));
 	}
 
 	public void setStyle(String styleName, String styleValue) {

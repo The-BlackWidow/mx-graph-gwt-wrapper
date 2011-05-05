@@ -41,6 +41,9 @@ function createOutline(parent) {
 	element.style.borderStyle = 'solid';
 	element.style.corderColor = 'black';
 	parent.appendChild(element);
+	if (mxClient.IS_IE) {
+		new mxDivResizer(element);
+	}
 	return new mxOutline(graph, element);
 }
 
