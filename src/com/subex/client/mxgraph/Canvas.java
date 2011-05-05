@@ -17,6 +17,7 @@ public class Canvas<T> extends ContentPanel {
 				jsObject = createCanvas(getId());
 				widgetAttached = true;
 				listener.onCanvasInitialized();
+				registerTooltip();
 			}
 		});
 	}
@@ -65,5 +66,12 @@ public class Canvas<T> extends ContentPanel {
 
 	public native JavaScriptObject addOutline(JavaScriptObject parent) /*-{
 		return $wnd.createOutline(parent);
+	}-*/;
+
+	public native void registerTooltip() /*-{
+		$wnd.graph.getTooltipForCell = function(cell)
+		{
+			return $wnd.alert(cell.id);
+		}
 	}-*/;
 }

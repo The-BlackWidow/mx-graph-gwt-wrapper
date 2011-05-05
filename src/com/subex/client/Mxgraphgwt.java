@@ -29,8 +29,6 @@ public class Mxgraphgwt implements EntryPoint {
 
 	public void onModuleLoad() {
 		mainPanel = new ContentPanel();
-		final ContentPanel outline = new ContentPanel();
-		outline.setId("outline");
 		drawCanvas();
 		mainPanel.setBottomComponent(getToolbar());
 		mainPanel.setHeight("600");
@@ -125,7 +123,8 @@ public class Mxgraphgwt implements EntryPoint {
 		window.show();
 		window.setMaximizable(true);
 
-		window.attach(getContent(window));
+		LayoutContainer content = getContent(window);
+		window.attach(content);
 	}
 
 	private LayoutContainer getContent(final MxWindow window) {
