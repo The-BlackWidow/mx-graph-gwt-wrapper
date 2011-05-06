@@ -22,7 +22,8 @@ public class Canvas<T> extends ContentPanel {
 			public void widgetAttached(ComponentEvent ce) {
 				jsObject = createCanvas(getId());
 				widgetAttached = true;
-				listener.onCanvasInitialized();
+				if (listener != null)
+					listener.onCanvasInitialized();
 				registerTooltip(Canvas.this);
 				registerClick(Canvas.this);
 				registerdDoubleClick(Canvas.this);
