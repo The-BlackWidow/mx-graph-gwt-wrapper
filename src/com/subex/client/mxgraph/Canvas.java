@@ -24,6 +24,8 @@ public class Canvas<T> extends ContentPanel {
 				widgetAttached = true;
 				listener.onCanvasInitialized();
 				registerTooltip(Canvas.this);
+				registerClick(Canvas.this);
+				registerdDoubleClick(Canvas.this);
 			}
 		});
 	}
@@ -87,5 +89,50 @@ public class Canvas<T> extends ContentPanel {
 	private String getTooltip(String id)
 	{
 		return canvasItems.get(id).getTooltip();
+	}
+	
+	private native void registerClick(Canvas<T> canvas) /*-{
+		$wnd.graph.addListener($wnd.mxEvent.CLICK, function(sender, evt)
+		{
+			var cell = evt.getProperty('cell');
+
+			if (cell != null)
+			{
+				canvas.@com.subex.client.mxgraph.Canvas::onClick(Ljava/lang/String;)(cell.id);
+			}
+			else
+			{
+				canvas.@com.subex.client.mxgraph.Canvas::onCanvasClick()();
+			}
+		});
+	}-*/;
+	
+	@SuppressWarnings("unused")
+	private void onClick(String id)
+	{
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void onCanvasClick()
+	{
+	}
+	
+	private native void registerdDoubleClick(Canvas<T> canvas) /*-{
+		$wnd.graph.addListener($wnd.mxEvent.DOUBLE_CLICK, function(sender, evt)
+		{
+			var cell = evt.getProperty('cell');
+
+			if (cell != null)
+			{
+				canvas.@com.subex.client.mxgraph.Canvas::onDoubleClick(Ljava/lang/String;)(cell.id);
+			}
+		});
+	}-*/;
+	
+	@SuppressWarnings("unused")
+	private void onDoubleClick(String id)
+	{
+		Window.alert(id);
 	}
 }
